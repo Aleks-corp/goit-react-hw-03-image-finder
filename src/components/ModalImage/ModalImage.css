@@ -1,0 +1,20 @@
+.ModalImage {
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  object-fit: contain;
+  color: green;
+}
+.modal-close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  color: orangered;
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-close-icon:hover,
+.modal-close-icon:focus {
+  transform: scale(1.1);
+  color: red;
+}

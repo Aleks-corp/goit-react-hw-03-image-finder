@@ -1,5 +1,10 @@
 import React from 'react';
+import './Button.css';
 
-const Button = ({ type, children }) => <button type={type}>{children}</button>;
+const Button = ({ type, onClick, disabled, children }) => (
+  <button className="Button" type={type} onClick={onClick} disabled={disabled}>
+    {children}
+  </button>
+);
 
 export default Button;
