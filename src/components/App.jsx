@@ -118,7 +118,7 @@ export class App extends Component {
     } = this.state;
     return (
       <div className="App">
-        <Searchbar onSubmit={this.onSubmitForm} />
+        <SearchBar onSubmit={this.onSubmitForm} />
         {showModal && (
           <Modal onClose={this.toggleModal}>
             <ModalImage
