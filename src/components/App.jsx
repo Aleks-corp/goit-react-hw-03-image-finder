@@ -1,5 +1,6 @@
 import Button from './Button';
 import React, { Component } from 'react';
+
 import { fetchImageGallery } from './axios';
 import { PER_PAGE } from './constants';
 import ImageGallery from './ImageGallery';
