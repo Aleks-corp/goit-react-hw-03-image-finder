@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { fetchImageGallery } from './axios';
 import { PER_PAGE } from './constants';
 import ImageGallery from './ImageGallery';
-import Searchbar from './Searchbar';
+import SearchBar from './SearchBar';
 import { Loader, LoaderForMoreImage } from './Loader';
 import Modal from './Modal';
 import ModalImage from './ModalImage';
