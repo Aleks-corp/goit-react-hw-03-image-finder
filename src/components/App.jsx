@@ -19,7 +19,7 @@ export class App extends Component {
     isLoading: false,
     isLoadMore: false,
     searchValue: null,
-    page: 2,
+    nextPage: null,
     totalPages: null,
     showModal: false,
   };
@@ -31,6 +31,7 @@ export class App extends Component {
       this.setState({
         imageGalleryList: [...response.hits],
         totalPages: Math.ceil(Number(response.totalHits) / PER_PAGE),
+        nextPage: 2,
       });
     } catch (error) {
       console.log('App ~ error', error);
@@ -58,14 +59,14 @@ export class App extends Component {
       this.setState({ isLoadMore: true });
       const response = await fetchImageGallery(
         this.state.searchValue,
-        this.state.page
+        this.state.nextPage
       );
       this.galleryMountFilteredById(response.hits);
       //Добавление в state без проверки повторяющихся ID
       // this.setState({
       //   imageGalleryList: [...this.state.imageGalleryList, ...response.hits],
       // });
-      this.setState(prevState => ({ page: prevState.page + 1 }));
+      this.setState(prevState => ({ nextPage: prevState.nextPage + 1 }));
     } catch (error) {
       console.log('App ~ error', error);
     } finally {
@@ -76,12 +77,19 @@ export class App extends Component {
   onSubmitForm = async e => {
     try {
       e.preventDefault();
+      if (this.state.searchValue === e.target[1].value.trim()) {
+        e.target[1].value = '';
+        return;
+      }
       this.setState({ isLoading: true });
+
       this.setState({ searchValue: e.target[1].value.trim() });
+
       const response = await fetchImageGallery(e.target[1].value.trim());
       this.setState({
         imageGalleryList: [...response.hits],
         totalPages: Math.ceil(Number(response.totalHits) / PER_PAGE),
+        nextPage: 2,
       });
       e.target[1].value = '';
     } catch (error) {
@@ -111,7 +119,7 @@ export class App extends Component {
   render() {
     const {
       imageGalleryList,
-      page,
+      nextPage,
       totalPages,
       isLoading,
       isLoadMore,
@@ -140,7 +148,7 @@ export class App extends Component {
         {isLoadMore ? (
           <LoaderForMoreImage />
         ) : (
-          page <= totalPages &&
+          nextPage <= totalPages &&
           totalPages !== null &&
           !isLoading && (
             <Button type="button" onClick={this.loadMoreImageHandler}>
