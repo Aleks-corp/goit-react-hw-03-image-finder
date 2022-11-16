@@ -17,7 +17,7 @@ export class App extends Component {
     shownImageInModalAlt: '',
 
     isLoading: false,
-    isloadMore: false,
+    isLoadMore: false,
     searchValue: null,
     page: 2,
     totalPages: null,
@@ -39,15 +39,15 @@ export class App extends Component {
     }
   }
 
-  galleryMountFilteredById(response) {
+  galleryMountFilteredById(newImageList) {
     //Поиск повторяющихся картинок и их фильтр
     //Чтобы не было проблем с повторяющимися ID
     const imageList = [...this.state.imageGalleryList];
-    const imageIdArray = [];
-    imageList.map(imageItm => imageIdArray.push(imageItm.id));
-    response.map(
-      responseItem =>
-        !imageIdArray.includes(responseItem.id) && imageList.push(responseItem)
+    const imageIdList = [];
+    imageList.map(imageItm => imageIdList.push(imageItm.id));
+    newImageList.map(
+      newImageItem =>
+        !imageIdList.includes(newImageItem.id) && imageList.push(newImageItem)
     );
     //Добавление в state после проверки и фильтра
     this.setState({ imageGalleryList: imageList });
@@ -55,7 +55,7 @@ export class App extends Component {
 
   loadMoreImageHandler = async () => {
     try {
-      this.setState({ isloadMore: true });
+      this.setState({ isLoadMore: true });
       const response = await fetchImageGallery(
         this.state.searchValue,
         this.state.page
@@ -63,13 +63,13 @@ export class App extends Component {
       this.galleryMountFilteredById(response.hits);
       //Добавление в state без проверки повторяющихся ID
       // this.setState({
-      //   imageGalleryList: [...this.state.imageGalleryList, ...response],
+      //   imageGalleryList: [...this.state.imageGalleryList, ...response.hits],
       // });
       this.setState(prevState => ({ page: prevState.page + 1 }));
     } catch (error) {
       console.log('App ~ error', error);
     } finally {
-      this.setState({ isloadMore: false });
+      this.setState({ isLoadMore: false });
     }
   };
 
@@ -83,6 +83,7 @@ export class App extends Component {
         imageGalleryList: [...response.hits],
         totalPages: Math.ceil(Number(response.totalHits) / PER_PAGE),
       });
+      e.target[1].value = '';
     } catch (error) {
       console.log('App ~ error', error);
     } finally {
@@ -95,14 +96,15 @@ export class App extends Component {
     }));
   };
   openImageInModal = id => {
-    const imageObject = this.state.imageGalleryList.find(
+    const selectedImage = this.state.imageGalleryList.find(
       imageOption => imageOption.id === id
     );
+
     this.setState({
-      shownImageInModalSrc: imageObject.largeImageURL,
-      shownImageInModalAlt: imageObject.tags,
+      shownImageInModalSrc: selectedImage.largeImageURL,
+      shownImageInModalAlt: selectedImage.tags,
     });
-    console.log('App ~ id', id);
+
     this.toggleModal();
   };
 
@@ -112,7 +114,7 @@ export class App extends Component {
       page,
       totalPages,
       isLoading,
-      isloadMore,
+      isLoadMore,
       showModal,
       shownImageInModalAlt,
       shownImageInModalSrc,
@@ -122,11 +124,7 @@ export class App extends Component {
         <SearchBar onSubmit={this.onSubmitForm} />
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <ModalImage
-              src={shownImageInModalSrc}
-              alt={shownImageInModalAlt}
-              onClick={this.toggleModal}
-            />
+            <ModalImage src={shownImageInModalSrc} alt={shownImageInModalAlt} />
           </Modal>
         )}
         {imageGalleryList.length > 0 && !isLoading && (
@@ -136,10 +134,10 @@ export class App extends Component {
           />
         )}
         {isLoading && <Loader />}
-        {imageGalleryList.length <= 0 && (
-          <p>Sorry, we don't find images, please try again</p>
+        {imageGalleryList.length === 0 && (
+          <p>Sorry, we din't find images, please try again</p>
         )}
-        {isloadMore ? (
+        {isLoadMore ? (
           <LoaderForMoreImage />
         ) : (
           page <= totalPages &&

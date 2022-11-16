@@ -1,11 +1,13 @@
 .ModalImage {
   max-width: calc(100vw - 48px);
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 96px);
   object-fit: contain;
   color: green;
+  /* background-image: url(./no-image.jpg); */
 }
 .modal-close-icon {
   position: absolute;
+  cursor: pointer;
   top: 10px;
   right: 10px;
   width: 24px;
